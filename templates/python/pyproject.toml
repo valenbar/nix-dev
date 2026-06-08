@@ -1,0 +1,15 @@
+[build-system]
+requires = [
+  "setuptools >= 40.9.0",
+  "setuptools-scm"
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "packagename"
+version = "0.0.0"
+requires-python = ">=3.10"
+dependencies = [ ]
+
+[project.scripts]
+packagename = "main:main"

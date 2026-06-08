@@ -1,0 +1,7 @@
+[package]
+name = "packagename"
+version = "0.0.0"
+edition = "2024"
+
+[dependencies]
+# example = "1.0.0"
