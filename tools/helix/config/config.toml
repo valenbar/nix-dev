@@ -1,0 +1,76 @@
+[editor]
+bufferline = "multiple"
+color-modes = true
+completion-replace = true
+cursorline = true
+end-of-line-diagnostics = "hint"
+line-number = "relative"
+mouse = true
+rulers = [120]
+scrolloff = 10
+shell = ["nu", "--stdin", "-c"]
+true-color = true
+
+[editor.cursor-shape]
+insert = "bar"
+normal = "block"
+select = "underline"
+
+[editor.gutters]
+layout = ["diff", "diagnostics", "line-numbers", "spacer"]
+
+[editor.indent-guides]
+character = "╎"
+render = true
+
+[editor.inline-diagnostics]
+cursor-line = "hint"
+
+[editor.lsp]
+display-inlay-hints = true
+display-messages = true
+
+[editor.soft-wrap]
+enable = false
+
+[editor.whitespace.render]
+nbsp = "all"
+newline = "none"
+nnbsp = "all"
+space = "none"
+tab = "all"
+
+[keys.normal]
+A-d = "delete_selection"
+C-g = [
+    ":write-all",
+    ":new",
+    ":insert-output lazygit",
+    ":buffer-close!",
+    ":redraw",
+    ":reload-all",
+]
+C-j = ["page_cursor_half_down", "align_view_center"]
+C-k = ["page_cursor_half_up", "align_view_center"]
+C-y = [
+    ":set mouse false",
+    ":insert-output yazi \"%{buffer_name}\" --chooser-file=/tmp/helix_yazi_file_open",
+    ":insert-output if not ('/tmp/helix_yazi_file_open' | path exists) { '/tmp/helix_yazi_file_open' | save /tmp/helix_yazi_file_open }",
+    ":redraw",
+    ":set mouse true",
+    ":open /tmp/helix_yazi_file_open",
+    "select_all",
+    "split_selection_on_newline",
+    "goto_file",
+    ":buffer-close! /tmp/helix_yazi_file_open",
+]
+H = ["insert_newline"]
+S-down = ["extend_to_line_bounds", "delete_selection", "paste_after"]
+S-up = ["extend_to_line_bounds", "delete_selection", "move_line_up", "paste_before"]
+X = "select_line_above"
+d = "delete_selection_noyank"
+x = "select_line_below"
+
+[keys.normal.space]
+W = ":toggle soft-wrap.enable"
+

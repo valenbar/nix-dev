@@ -1,0 +1,5 @@
+os:
+  editPreset: helix (hx)
+  open: xdg-open {{filename}}
+
+disableStartupPopups: true

@@ -1,0 +1,77 @@
+[[language]]
+auto-format = false
+name = "nu"
+
+[language.formatter]
+args = ["--stdin", "--config", ""]
+command = "nufmt"
+
+[[language]]
+auto-format = true
+language-servers = ["nixd", "nil"]
+name = "nix"
+
+[language.formatter]
+command = "nixfmt"
+
+[[language]]
+name = "json"
+
+[language.formatter]
+args = ["fmt", "-", "--ext", "json"]
+command = "deno"
+
+[[language]]
+auto-format = true
+name = "json"
+
+[[language.language-servers]]
+except-features = ["format"]
+name = "vscode-json-language-server"
+
+[language.formatter]
+args = ["fmt", "-", "--ext", "json"]
+command = "deno"
+
+[[language]]
+language-servers = ["vscode-css-language-server"]
+name = "css"
+
+[language.formatter]
+args = ["--parser", "css"]
+command = "prettier"
+
+[[language]]
+language-servers = ["hyprls"]
+name = "hyprlang"
+
+[[language]]
+auto-format = true
+file-types = ["rs"]
+language-servers = ["rust-analyzer"]
+name = "rust"
+text-width = 120
+
+[language.indent]
+tab-width = 4
+unit = " "
+
+[language.soft-wrap]
+enable = true
+
+[language-server.hyprls]
+command = "hyprls"
+
+[language-server.nixd]
+args = ["--inlay-hints=true"]
+command = "nixd"
+
+[language-server.nixd.config.nixd.options.nixpkgs]
+expr = "import (builtins.getFlake \"../../../\").inputs.nixpkgs {}"
+
+[language-server.rust-analyzer.config.cargo]
+fatures = "all"
+
+[language-server.rust-analyzer.config.check]
+command = "clippy"
+features = "all"
