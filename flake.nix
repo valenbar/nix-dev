@@ -12,6 +12,10 @@
         rust = {
           path = ./templates/rust;
         };
+
+        java = {
+          path = ./templates/java;
+        };
       };
 
     };
