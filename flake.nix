@@ -31,6 +31,9 @@
         rust = {
           path = ./templates/rust;
         };
+        nushell = {
+          path = ./templates/nushell;
+        };
       };
 
       packages = forAllSystems (
