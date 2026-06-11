@@ -4,6 +4,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     flake-utils.url = "github:numtide/flake-utils";
+    nix-dev.url = "github:valenbar/nix-dev";
   };
 
   outputs =
@@ -11,6 +12,7 @@
       self,
       nixpkgs,
       flake-utils,
+      nix-dev,
     }:
     flake-utils.lib.eachDefaultSystem (
       system:
@@ -38,6 +40,7 @@
           packages =
             with pkgs;
             [
+              # nix-dev.packages.${system}.helix-wrapped
               cargo
               rustc
               rustfmt
