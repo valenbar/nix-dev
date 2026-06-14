@@ -43,7 +43,8 @@
         in
         {
           lazygit-wrapped = pkgs.callPackage ./tools/lazygit { inherit pkgs; };
-          helix-wrapped = pkgs.callPackage ./tools/helix { inherit pkgs nix-wrapper-modules; };
+          helix-wrapped = pkgs.callPackage ./tools/helix { inherit pkgs nix-wrapper-modules self; };
+          yazi-wrapped = pkgs.callPackage ./tools/yazi { inherit pkgs nix-wrapper-modules; };
 
           nu-jupyter-kernel = pkgs.callPackage ./pkgs/nu-jupyter-kernel/package.nix { };
         }

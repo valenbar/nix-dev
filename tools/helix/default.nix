@@ -1,4 +1,5 @@
 {
+  self,
   lib,
   pkgs,
   nix-wrapper-modules,
@@ -29,7 +30,7 @@ nix-wrapper-modules.wrappers.helix.wrap {
     };
 
   runtimePkgs = with pkgs; [
-    yazi
+    self.packages.${pkgs.stdenv.hostPlatform.system}.yazi-wrapped
     nufmt
     nixfmt
     deno
