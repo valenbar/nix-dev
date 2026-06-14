@@ -4,11 +4,39 @@
   pkgs,
   nix-wrapper-modules,
 }:
+let
+  yazi-wrapped = self.packages.${pkgs.stdenv.hostPlatform.system}.yazi-wrapped;
+  lazygit-wrapped = self.packages.${pkgs.stdenv.hostPlatform.system}.lazygit-wrapped;
+in
 nix-wrapper-modules.wrappers.helix.wrap {
   inherit pkgs;
 
   settings = lib.importTOML ./config/config.toml // {
     theme = "catppuccin";
+    keys.normal = {
+      "C-y" = [
+        ":set mouse false"
+        ":insert-output if ('/tmp/helix_yazi_file_open' | path exists) { rm '/tmp/helix_yazi_file_open' }"
+        '':insert-output ${lib.getExe yazi-wrapped} "%{buffer_name}" --chooser-file=/tmp/helix_yazi_file_open''
+        ":insert-output if not ('/tmp/helix_yazi_file_open' | path exists) { '/tmp/helix_yazi_file_open' | save /tmp/helix_yazi_file_open }"
+        ":redraw"
+        ":set mouse true"
+        ":open /tmp/helix_yazi_file_open"
+        "select_all"
+        "split_selection_on_newline"
+        "goto_file"
+        ":buffer-close! /tmp/helix_yazi_file_open"
+      ];
+      "C-g" = [
+        ":write-all"
+        ":new"
+        ":insert-output ${lib.getExe lazygit-wrapped}"
+        ":buffer-close!"
+        ":redraw"
+        ":reload-all"
+      ];
+
+    };
   };
 
   languages = lib.importTOML ./config/languages.toml;
@@ -30,7 +58,8 @@ nix-wrapper-modules.wrappers.helix.wrap {
     };
 
   runtimePkgs = with pkgs; [
-    self.packages.${pkgs.stdenv.hostPlatform.system}.yazi-wrapped
+    yazi-wrapped
+    lazygit-wrapped
     nufmt
     nixfmt
     deno

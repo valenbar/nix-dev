@@ -42,29 +42,29 @@ tab = "all"
 
 [keys.normal]
 A-d = "delete_selection"
-C-g = [
-    ":write-all",
-    ":new",
-    ":insert-output lazygit",
-    ":buffer-close!",
-    ":redraw",
-    ":reload-all",
-]
+# C-g = [
+#     ":write-all",
+#     ":new",
+#     ":insert-output lazygit",
+#     ":buffer-close!",
+#     ":redraw",
+#     ":reload-all",
+# ]
 C-j = ["page_cursor_half_down", "align_view_center"]
 C-k = ["page_cursor_half_up", "align_view_center"]
-C-y = [
-    ":set mouse false",
-    ":insert-output if ('/tmp/helix_yazi_file_open' | path exists) { rm '/tmp/helix_yazi_file_open' }",
-    ":insert-output yazi \"%{buffer_name}\" --chooser-file=/tmp/helix_yazi_file_open",
-    ":insert-output if not ('/tmp/helix_yazi_file_open' | path exists) { '/tmp/helix_yazi_file_open' | save /tmp/helix_yazi_file_open }",
-    ":redraw",
-    ":set mouse true",
-    ":open /tmp/helix_yazi_file_open",
-    "select_all",
-    "split_selection_on_newline",
-    "goto_file",
-    ":buffer-close! /tmp/helix_yazi_file_open",
-]
+# C-y = [
+#     ":set mouse false",
+#     ":insert-output if ('/tmp/helix_yazi_file_open' | path exists) { rm '/tmp/helix_yazi_file_open' }",
+#     ":insert-output yazi \"%{buffer_name}\" --chooser-file=/tmp/helix_yazi_file_open",
+#     ":insert-output if not ('/tmp/helix_yazi_file_open' | path exists) { '/tmp/helix_yazi_file_open' | save /tmp/helix_yazi_file_open }",
+#     ":redraw",
+#     ":set mouse true",
+#     ":open /tmp/helix_yazi_file_open",
+#     "select_all",
+#     "split_selection_on_newline",
+#     "goto_file",
+#     ":buffer-close! /tmp/helix_yazi_file_open",
+# ]
 H = ["insert_newline"]
 S-down = ["extend_to_line_bounds", "delete_selection", "paste_after"]
 S-up = ["extend_to_line_bounds", "delete_selection", "move_line_up", "paste_before"]

@@ -11,4 +11,5 @@ pkgs.symlinkJoin {
       --set CONFIG_DIR "/tmp/lazygit" \
       --add-flags "--use-config-file=${./config/config.yaml},${./config/theme.yaml}"
   '';
+  meta.mainProgram = "lazygit";
 }
