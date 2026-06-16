@@ -1,0 +1,12 @@
+[[language]]
+name = "typst"
+language-servers = ["tinymist"]
+
+[language-server.tinymist]
+command = "tinymist"
+config.exportPdf = "onSave"
+config.preview.refresh = "onType"
+config.preview.background.enabled = true
+config.preview.background.args = [
+  "--data-plane-host=127.0.0.1:23635", "--invert-colors=never", "--open"]
+typstExtraArgs = ["main.typ"]

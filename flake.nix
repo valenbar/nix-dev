@@ -37,6 +37,10 @@
           path = ./templates/nushell;
           description = "Nu dev environment";
         };
+        typst = {
+          path = ./templates/typst;
+          description = "Typst dev environment";
+        };
       };
 
       packages = forAllSystems (
