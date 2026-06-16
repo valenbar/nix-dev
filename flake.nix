@@ -27,12 +27,15 @@
       templates = {
         python = {
           path = ./templates/python;
+          description = "Python dev environment";
         };
         rust = {
           path = ./templates/rust;
+          description = "Rust dev environment";
         };
         nushell = {
           path = ./templates/nushell;
+          description = "Nu dev environment";
         };
       };
 
