@@ -18,15 +18,21 @@
       system:
       let
         pkgs = import nixpkgs { inherit system; };
+        enableJupyter = false;
       in
       {
         devShells.default = pkgs.mkShell {
-          buildInputs = with pkgs; [
-            jupyter
-            nix-dev.packages.${system}.nu-jupyter-kernel
-          ];
+          buildInputs =
+            with pkgs;
+            [
+              nushell
+            ]
+            ++ lib.optional enableJupyter [
+              jupyter
+              nix-dev.packages.${system}.nu-jupyter-kernel
+            ];
 
-          shellHook = ''
+          shellHook = pkgs.lib.optionalString enableJupyter ''
             echo "Run 'nu-jupyter-kernel --register' to register the Nushell kernel"
           '';
         };
