@@ -66,11 +66,8 @@ command = "hyprls"
 args = ["--inlay-hints=true"]
 command = "nixd"
 
-[language-server.nixd.config.nixd.options.nixpkgs]
-expr = "import (builtins.getFlake \"../../../\").inputs.nixpkgs {}"
-
 [language-server.rust-analyzer.config.cargo]
-fatures = "all"
+features = "all"
 
 [language-server.rust-analyzer.config.check]
 command = "clippy"

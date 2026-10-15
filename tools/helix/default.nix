@@ -39,7 +39,10 @@ nix-wrapper-modules.wrappers.helix.wrap {
     };
   };
 
-  languages = lib.importTOML ./config/languages.toml;
+  languages = lib.recursiveUpdate (lib.importTOML ./config/languages.toml) {
+    # nixpkgs option completion, pinned to the nixpkgs this helix is built from
+    language-server.nixd.config.nixd.options.nixpkgs.expr = "import ${pkgs.path} { }";
+  };
 
   themes =
     let
@@ -60,6 +63,8 @@ nix-wrapper-modules.wrappers.helix.wrap {
   runtimePkgs = with pkgs; [
     yazi-wrapped
     lazygit-wrapped
+    nushell # editor.shell and the C-y binding run through nu
+    vscode-langservers-extracted # json, css
     nufmt
     nixfmt
     deno
