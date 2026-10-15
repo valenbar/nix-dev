@@ -1,87 +1,85 @@
 {
-  description = "Rust template";
+  description = "Rust project";
 
-  inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    flake-utils.url = "github:numtide/flake-utils";
-    nix-dev.url = "github:valenbar/nix-dev";
-  };
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
   outputs =
+    { self, nixpkgs }:
+    let
+      forAllSystems =
+        f:
+        nixpkgs.lib.genAttrs nixpkgs.lib.systems.flakeExposed (system: f nixpkgs.legacyPackages.${system});
+
+      cargoPackage = (nixpkgs.lib.importTOML ./Cargo.toml).package;
+    in
     {
-      self,
-      nixpkgs,
-      flake-utils,
-      nix-dev,
-    }:
-    flake-utils.lib.eachDefaultSystem (
-      system:
-      let
-        pkgs = import nixpkgs { inherit system; };
+      packages = forAllSystems (
+        pkgs:
+        let
+          # Programs the binary calls at runtime; put on its PATH via a wrapper.
+          runtimeDependencies = with pkgs; [ ];
+        in
+        {
+          default = pkgs.rustPlatform.buildRustPackage {
+            pname = cargoPackage.name;
+            inherit (cargoPackage) version;
 
-        # dependencies needed in path during runtime
-        runtimeDependencies = with pkgs; [ ];
+            src = nixpkgs.lib.fileset.toSource {
+              root = ./.;
+              fileset = nixpkgs.lib.fileset.unions [
+                ./Cargo.toml
+                ./Cargo.lock
+                ./src
+              ];
+            };
+            cargoLock.lockFile = ./Cargo.lock;
 
-        # dependencies needed during build time
-        nativeBuildInputs = with pkgs; [
-          makeWrapper
-          pkg-config
-        ];
+            nativeBuildInputs = with pkgs; [
+              makeWrapper
+              pkg-config
+            ];
+            # Libraries to link against, e.g. openssl, dbus
+            buildInputs = with pkgs; [ ];
 
-        # things that need to be linked against eg. openssl, dbus
-        buildInputs = with pkgs; [ ];
+            postInstall = nixpkgs.lib.optionalString (runtimeDependencies != [ ]) ''
+              wrapProgram $out/bin/${cargoPackage.name} \
+                --prefix PATH : ${nixpkgs.lib.makeBinPath runtimeDependencies}
+            '';
 
-        cargo_package = (fromTOML (builtins.readFile ./Cargo.toml)).package;
-        pname = cargo_package.name;
-        version = cargo_package.version;
-      in
-      {
-        devShells.default = pkgs.mkShell {
-          packages =
-            with pkgs;
-            [
-              # nix-dev.packages.${system}.helix-wrapped
-              cargo
-              rustc
-              rustfmt
-              rustPackages.clippy
-              bacon
-              rust-analyzer
-            ]
-            ++ nativeBuildInputs
-            ++ runtimeDependencies;
-
-          RUST_SRC_PATH = pkgs.rustPlatform.rustLibSrc;
-        };
-
-        defaultPackage = pkgs.rustPlatform.buildRustPackage {
-          inherit
-            pname
-            version
-            buildInputs
-            nativeBuildInputs
-            ;
-
-          src = ./.;
-
-          cargoLock = {
-            lockFile = ./Cargo.lock;
+            passthru = { inherit runtimeDependencies; };
+            meta.mainProgram = cargoPackage.name;
           };
+        }
+      );
 
-          # wrap binary to include runtime dependencies in path
-          postInstall = ''
-            wrapProgram $out/bin/${pname} \
-              --prefix PATH : ${pkgs.lib.makeBinPath runtimeDependencies}
-          '';
+      devShells = forAllSystems (
+        pkgs:
+        let
+          package = self.packages.${pkgs.stdenv.hostPlatform.system}.default;
+        in
+        {
+          default = pkgs.mkShell {
+            # cargo, rustc and the package's build inputs.
+            inputsFrom = [ package ];
+            packages =
+              with pkgs;
+              [
+                clippy
+                rustfmt
+                rust-analyzer
+                bacon
+              ]
+              ++ package.runtimeDependencies;
 
-          meta = {
-            description = "";
-            homepage = "";
-            license = [ ];
-            mainProgram = pname;
+            RUST_SRC_PATH = pkgs.rustPlatform.rustLibSrc;
           };
-        };
+        }
+      );
 
-      }
-    );
+      checks = forAllSystems (pkgs: {
+        default = self.packages.${pkgs.stdenv.hostPlatform.system}.default;
+      });
+
+      formatter = forAllSystems (pkgs: pkgs.nixfmt-tree);
+    };
 }

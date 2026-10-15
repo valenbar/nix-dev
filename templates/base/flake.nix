@@ -1,30 +1,21 @@
 {
-  description = "Base template";
+  description = "Dev shell";
 
-  inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    flake-utils.url = "github:numtide/flake-utils";
-    nix-dev.url = "github:valenbar/nix-dev";
-  };
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
   outputs =
+    { nixpkgs, ... }:
+    let
+      forAllSystems =
+        f:
+        nixpkgs.lib.genAttrs nixpkgs.lib.systems.flakeExposed (system: f nixpkgs.legacyPackages.${system});
+    in
     {
-      self,
-      nixpkgs,
-      flake-utils,
-      nix-dev,
-    }:
-    flake-utils.lib.eachDefaultSystem (
-      system:
-      let
-        pkgs = nixpkgs.legacyPackages.${system};
-      in
-      {
-        devShells.default = pkgs.mkShell {
+      devShells = forAllSystems (pkgs: {
+        default = pkgs.mkShell {
           packages = with pkgs; [
-            # nix-dev.packages.${system}.helix-wrapped
           ];
         };
-      }
-    );
+      });
+    };
 }
