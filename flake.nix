@@ -25,6 +25,10 @@
     in
     {
       templates = {
+        base = {
+          path = ./templates/base;
+          description = "Empty dev shell";
+        };
         python-shell = {
           path = ./templates/python/shell;
           description = "Python shell: minimal python dev shell";
