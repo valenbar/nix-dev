@@ -7,12 +7,12 @@
 }:
 rustPlatform.buildRustPackage (finalAttrs: {
   pname = "nu-jupyter-kernel";
-  version = "nu-jupyter-kernel/v0.1.15+0.111.0";
+  version = "0.1.15+0.111.0";
 
   src = fetchFromGitHub {
     owner = "cptpiepmatz";
     repo = "nu-jupyter-kernel";
-    rev = finalAttrs.version;
+    tag = "nu-jupyter-kernel/v${finalAttrs.version}";
     hash = "sha256-hBMmIJYRUs5fDPLYxVhfpiQHShZV4uj/o+DRuQsCIjk=";
   };
 
@@ -26,7 +26,7 @@ rustPlatform.buildRustPackage (finalAttrs: {
   meta = {
     description = "Jupyter kernel for nu";
     homepage = "https://github.com/cptpiepmatz/nu-jupyter-kernel";
-    changelog = "https://github.com/cptpiepmatz/nu-jupyter-kernel/releases/tag/${finalAttrs.version}";
+    changelog = "https://github.com/cptpiepmatz/nu-jupyter-kernel/releases/tag/${finalAttrs.src.tag}";
     license = with lib.licenses; [
       mit
     ];
