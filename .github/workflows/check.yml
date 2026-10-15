@@ -1,0 +1,52 @@
+name: Check
+
+on:
+  push:
+  pull_request:
+  schedule:
+    # Weekly, to notice nixpkgs-unstable breaking a template before you do.
+    - cron: "0 6 * * 1"
+
+jobs:
+  packages:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: cachix/install-nix-action@v31
+      - run: nix flake check -L
+
+  list-templates:
+    runs-on: ubuntu-latest
+    outputs:
+      templates: ${{ steps.list.outputs.templates }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: cachix/install-nix-action@v31
+      - id: list
+        run: echo "templates=$(nix eval --json .#templates --apply builtins.attrNames)" >> "$GITHUB_OUTPUT"
+
+  template:
+    needs: list-templates
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        template: ${{ fromJSON(needs.list-templates.outputs.templates) }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: cachix/install-nix-action@v31
+      - name: Init ${{ matrix.template }}
+        run: |
+          mkdir "$RUNNER_TEMP/project" && cd "$RUNNER_TEMP/project"
+          nix flake init -t "$GITHUB_WORKSPACE#${{ matrix.template }}"
+          git init -q && git add -A
+      - name: Check and build dev shell
+        working-directory: ${{ runner.temp }}/project
+        run: |
+          # Test templates against this checkout of nix-dev, not the published one.
+          override=()
+          if grep -q 'nix-dev' flake.nix; then
+            override=(--override-input nix-dev "path:$GITHUB_WORKSPACE")
+          fi
+          nix flake check -L "${override[@]}"
+          nix develop "${override[@]}" -c true
