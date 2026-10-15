@@ -1,0 +1,18 @@
+[build-system]
+requires = ["uv_build"]
+build-backend = "uv_build"
+
+[project]
+name = "mypackage"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.13"
+# Runtime dependencies. Names are looked up in nixpkgs' python3Packages.
+dependencies = []
+
+[project.scripts]
+mypackage = "mypackage.main:main"
+
+# Available in the dev shell and when running tests in the Nix build.
+[dependency-groups]
+dev = ["pytest"]

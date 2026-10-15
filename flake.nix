@@ -25,9 +25,13 @@
     in
     {
       templates = {
-        python = {
-          path = ./templates/python;
-          description = "Python dev environment";
+        python-shell = {
+          path = ./templates/python/shell;
+          description = "Python shell: minimal python dev shell";
+        };
+        python-app = {
+          path = ./templates/python/app;
+          description = "Python app: dev shell + nix package using pyproject.toml";
         };
         rust = {
           path = ./templates/rust;
