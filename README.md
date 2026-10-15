@@ -15,6 +15,7 @@ nix flake init -t github:valenbar/nix-dev#<template>
 | `python-app` | Python project driven by `pyproject.toml`: dev shell, `nix run`, tests |
 | `cpp` | C/C++ with CMake: dev shell, `nix run` |
 | `rust` | Rust with Cargo: dev shell, `nix run` |
+| `java` | Java with Maven: dev shell, `nix run`, JUnit tests |
 | `nushell` | Nushell script: dev shell, `nix run`, optional Jupyter kernel |
 | `typst` | Typst document: compiler, LSP, live preview |
 

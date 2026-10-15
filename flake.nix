@@ -84,6 +84,17 @@
             package = true;
           };
         };
+        java = {
+          path = ./templates/java;
+          description = "Java (Maven): dev shell + package for nix run/flake check, JUnit tests";
+          welcomeText = usage {
+            setup = ''
+              Rename `myapp` in `pom.xml`, `flake.nix` and the `src/` package path.
+              After changing dependencies in `pom.xml`, set `mvnHash = ""` and copy the hash from `nix build`.
+            '';
+            package = true;
+          };
+        };
         nushell = {
           path = ./templates/nushell;
           description = "Nushell: dev shell + script package, optional Jupyter kernel";
