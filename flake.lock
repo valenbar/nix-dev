@@ -1,5 +1,21 @@
 {
   "nodes": {
+    "catppuccin-helix": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1771425236,
+        "narHash": "sha256-F05ohJp7c9Pdnjq8+srfhAt1ogHjjBz50k1ftHOHGVg=",
+        "owner": "catppuccin",
+        "repo": "helix",
+        "rev": "91e071bf9b9b2b8ae176a5581fcb61c789c55cab",
+        "type": "github"
+      },
+      "original": {
+        "owner": "catppuccin",
+        "repo": "helix",
+        "type": "github"
+      }
+    },
     "nix-wrapper-modules": {
       "inputs": {
         "nixpkgs": [
@@ -38,6 +54,7 @@
     },
     "root": {
       "inputs": {
+        "catppuccin-helix": "catppuccin-helix",
         "nix-wrapper-modules": "nix-wrapper-modules",
         "nixpkgs": "nixpkgs"
       }

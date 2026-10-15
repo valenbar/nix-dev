@@ -7,6 +7,10 @@
       url = "github:BirdeeHub/nix-wrapper-modules";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    catppuccin-helix = {
+      url = "github:catppuccin/helix";
+      flake = false;
+    };
   };
 
   outputs =
@@ -14,6 +18,7 @@
       self,
       nixpkgs,
       nix-wrapper-modules,
+      catppuccin-helix,
     }:
     let
       forAllSystems =
@@ -101,9 +106,12 @@
         pkgs:
         let
           tools = {
-            lazygit-wrapped = pkgs.callPackage ./tools/lazygit { inherit pkgs; };
-            helix-wrapped = pkgs.callPackage ./tools/helix { inherit pkgs nix-wrapper-modules self; };
-            yazi-wrapped = pkgs.callPackage ./tools/yazi { inherit pkgs nix-wrapper-modules; };
+            lazygit-wrapped = pkgs.callPackage ./tools/lazygit { };
+            yazi-wrapped = pkgs.callPackage ./tools/yazi { inherit nix-wrapper-modules; };
+            helix-wrapped = pkgs.callPackage ./tools/helix {
+              inherit nix-wrapper-modules catppuccin-helix;
+              inherit (tools) yazi-wrapped lazygit-wrapped;
+            };
           };
         in
         tools

@@ -6,9 +6,6 @@
 nix-wrapper-modules.wrappers.yazi.wrap {
   inherit pkgs;
 
-  runtimePkgs = with pkgs; [
-  ];
-
   constructFiles = {
     init = {
       relPath = "yazi-config/init.lua";

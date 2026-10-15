@@ -15,13 +15,6 @@ name = "nix"
 command = "nixfmt"
 
 [[language]]
-name = "json"
-
-[language.formatter]
-args = ["fmt", "-", "--ext", "json"]
-command = "deno"
-
-[[language]]
 auto-format = true
 name = "json"
 

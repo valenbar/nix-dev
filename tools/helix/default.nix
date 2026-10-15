@@ -1,12 +1,15 @@
 {
-  self,
   lib,
   pkgs,
   nix-wrapper-modules,
+  catppuccin-helix,
+  yazi-wrapped,
+  lazygit-wrapped,
 }:
 let
-  yazi-wrapped = self.packages.${pkgs.stdenv.hostPlatform.system}.yazi-wrapped;
-  lazygit-wrapped = self.packages.${pkgs.stdenv.hostPlatform.system}.lazygit-wrapped;
+  # Per-instance file for yazi's chosen paths (exported by the wrapper below),
+  # so two helix instances never share it. Read via nu, the configured shell.
+  chooser = "$env.HELIX_YAZI_CHOOSER";
 in
 nix-wrapper-modules.wrappers.helix.wrap {
   inherit pkgs;
@@ -16,16 +19,16 @@ nix-wrapper-modules.wrappers.helix.wrap {
     keys.normal = {
       "C-y" = [
         ":set mouse false"
-        ":insert-output if ('/tmp/helix_yazi_file_open' | path exists) { rm '/tmp/helix_yazi_file_open' }"
-        '':insert-output ${lib.getExe yazi-wrapped} "%{buffer_name}" --chooser-file=/tmp/helix_yazi_file_open''
-        ":insert-output if not ('/tmp/helix_yazi_file_open' | path exists) { '/tmp/helix_yazi_file_open' | save /tmp/helix_yazi_file_open }"
+        ":insert-output rm -f ${chooser}"
+        '':insert-output ${lib.getExe yazi-wrapped} "%{buffer_name}" $"--chooser-file=(${chooser})"''
+        ":insert-output if not (${chooser} | path exists) { ${chooser} | save ${chooser} }"
         ":redraw"
         ":set mouse true"
-        ":open /tmp/helix_yazi_file_open"
+        ":open %sh{${chooser}}"
         "select_all"
         "split_selection_on_newline"
         "goto_file"
-        ":buffer-close! /tmp/helix_yazi_file_open"
+        ":buffer-close! %sh{${chooser}}"
       ];
       "C-g" = [
         ":write-all"
@@ -35,7 +38,6 @@ nix-wrapper-modules.wrappers.helix.wrap {
         ":redraw"
         ":reload-all"
       ];
-
     };
   };
 
@@ -44,21 +46,11 @@ nix-wrapper-modules.wrappers.helix.wrap {
     language-server.nixd.config.nixd.options.nixpkgs.expr = "import ${pkgs.path} { }";
   };
 
-  themes =
-    let
-      catppuccin-helix = pkgs.fetchFromGitHub {
-        owner = "catppuccin";
-        repo = "helix";
-        rev = "91e071bf9b9b2b8ae176a5581fcb61c789c55cab";
-        sha256 = "sha256-F05ohJp7c9Pdnjq8+srfhAt1ogHjjBz50k1ftHOHGVg=";
-      };
-      flavor = "mocha";
-    in
-    {
-      catppuccin = fromTOML (
-        builtins.readFile "${catppuccin-helix}/themes/default/catppuccin_${flavor}.toml"
-      );
-    };
+  themes.catppuccin = lib.importTOML "${catppuccin-helix}/themes/default/catppuccin_mocha.toml";
+
+  runShell = [
+    ''export HELIX_YAZI_CHOOSER="$(${pkgs.coreutils}/bin/mktemp -u -t helix-yazi.XXXXXX)"''
+  ];
 
   runtimePkgs = with pkgs; [
     yazi-wrapped
