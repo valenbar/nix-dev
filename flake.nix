@@ -37,6 +37,10 @@
           path = ./templates/python/app;
           description = "Python app: dev shell + nix package using pyproject.toml";
         };
+        cpp = {
+          path = ./templates/cpp;
+          description = "C/C++ (CMake): dev shell + package for nix run/flake check";
+        };
         rust = {
           path = ./templates/rust;
           description = "Rust dev environment";

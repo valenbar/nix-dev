@@ -1,0 +1,11 @@
+# CMake
+build/
+
+# clangd
+.cache/
+
+# Nix
+result*
+
+# Misc
+.direnv
